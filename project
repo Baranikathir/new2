@@ -1,0 +1,139 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+// Review class to represent each review
+class Review {
+    private String reviewerName;
+    private int rating;  // Rating between 1 and 5
+    private String reviewText;
+
+    public Review(String reviewerName, int rating, String reviewText) {
+        this.reviewerName = reviewerName;
+        setRating(rating); // Validate rating between 1 and 5
+        this.reviewText = reviewText;
+    }
+
+    // Getters and Setters
+    public String getReviewerName() {
+        return reviewerName;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        if (rating >= 1 && rating <= 5) {
+            this.rating = rating;
+        } else {
+            System.out.println("Invalid rating. Setting rating to 1.");
+            this.rating = 1;
+        }
+    }
+
+    public String getReviewText() {
+        return reviewText;
+    }
+
+    @Override
+    public String toString() {
+        return "Reviewer: " + reviewerName + "\nRating: " + rating + "/5\nReview: " + reviewText;
+    }
+}
+
+// Product class to represent a product
+class Product {
+    private String name;
+    private List<Review> reviews;
+
+    public Product(String name) {
+        this.name = name;
+        this.reviews = new ArrayList<>();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void addReview(Review review) {
+        reviews.add(review);
+    }
+
+    public double getAverageRating() {
+        if (reviews.isEmpty()) return 0;
+        int total = 0;
+        for (Review review : reviews) {
+            total += review.getRating();
+        }
+        return (double) total / reviews.size();
+    }
+
+    public void displayReviews() {
+        if (reviews.isEmpty()) {
+            System.out.println("No reviews yet.");
+        } else {
+            for (Review review : reviews) {
+                System.out.println(review);
+                System.out.println("-----------");
+            }
+        }
+    }
+}
+
+// Main class to handle user interaction
+public class ProductReviewSystem {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Sample Product
+        Product product = new Product("Laptop");
+
+        // User interaction
+        while (true) {
+            System.out.println("\nProduct Review System");
+            System.out.println("1. View Product Reviews");
+            System.out.println("2. Add a Review");
+            System.out.println("3. Show Average Rating");
+            System.out.println("4. Exit");
+            System.out.print("Choose an option: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();  // Consume newline
+
+            switch (choice) {
+                case 1:
+                    product.displayReviews();
+                    break;
+
+                case 2:
+                    // Input review details
+                    System.out.print("Enter your name: ");
+                    String name = scanner.nextLine();
+                    System.out.print("Enter rating (1 to 5): ");
+                    int rating = scanner.nextInt();
+                    scanner.nextLine();  // Consume newline
+                    System.out.print("Enter your review: ");
+                    String reviewText = scanner.nextLine();
+
+                    // Create a review and add it to the product
+                    Review review = new Review(name, rating, reviewText);
+                    product.addReview(review);
+                    System.out.println("Thank you for your review!");
+                    break;
+
+                case 3:
+                    // Show average rating
+                    System.out.println("Average Rating: " + product.getAverageRating() + "/5");
+                    break;
+
+                case 4:
+                    System.out.println("Thank you for using the review system. Goodbye!");
+                    scanner.close();
+                    return;
+
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+}
